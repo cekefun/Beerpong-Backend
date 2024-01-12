@@ -19,7 +19,7 @@ wsServer.on("request", request => {
         //I have received a message from the client
         //a user want to create a new game
         if (result.method === "create") {
-            const gameId = guid();
+            const gameId = gameId();
             games[gameId] = {
                 "id": gameId,
                 "player1": {
@@ -113,6 +113,10 @@ function updateGameState(){
         })
     }
 
+}
+
+function gameId(){
+    return Math.random().toString(36).slice(2,6);
 }
 
 
