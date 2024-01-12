@@ -21,6 +21,8 @@ const wsServer = new server({
 wsServer.on("request", request => {
     //connect
     console.log(request.httpRequest.headers.cookie);
+    console.log(request.httpRequest.headers);
+
 
     const userId = request.httpRequest.headers.cookie ? parseCookie(request.httpRequest.headers.cookie).userId: undefined;
     const connection = request.accept(null, request.origin);
@@ -28,8 +30,6 @@ wsServer.on("request", request => {
     connection.on("close", () => console.log("closed!"))
     connection.on("message", message => {
         const result = JSON.parse(message.utf8Data)
-        console.log(message.utf8Data);
-        console.log(result.method)
         //I have received a message from the client
         //a user want to create a new game
         if (result.method === "create") {
@@ -56,7 +56,6 @@ wsServer.on("request", request => {
             }
 
             const con = clients[userId].connection;
-            console.log(payLoad);
             con.send(JSON.stringify(payLoad));
             updateGameState();
         }
@@ -82,18 +81,11 @@ wsServer.on("request", request => {
         if (result.method === "update") {
             const gameId = result.gameId;
 
-            console.log("update")
-            console.log(JSON.stringify(result))
-            console.log(games[gameId])
-
             if(!games[gameId]){
                 games[gameId] = {host: result.gameId, clients: [{clientId: result.userId}]}
                 games[gameId].player1 = {};
                 games[gameId].player2 = {};
             }
-            console.log(games[gameId])
-            console.log(result.game.player1);
-            console.log(result.game.player2);
 
 
             games[gameId].player1 = result.game.player1;
@@ -121,7 +113,6 @@ wsServer.on("request", request => {
 function updateGameState(){
 
     //{"gameid", fasdfsf}
-    console.log("updating")
     for (const g of Object.keys(games)) {
         const game = games[g]
         const payLoad = {
@@ -130,7 +121,6 @@ function updateGameState(){
         }
 
         game.clients.forEach(c=> {
-            console.log(c.clientId)
             clients[c.clientId].connection.send(JSON.stringify(payLoad))
         })
     }
