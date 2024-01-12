@@ -98,7 +98,7 @@ wsServer.on("request", request => {
 
     console.log("Created new user: ")
     console.log(clientId)
-    console.log(clients.keys)
+    console.log(clients[clientId])
     //send back the client connect
     connection.send(JSON.stringify(payLoad))
 })
