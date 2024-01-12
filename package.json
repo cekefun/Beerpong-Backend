@@ -1,0 +1,19 @@
+{
+  "name": "beerpong-backend",
+  "version": "1.0.0",
+  "description": "Backend for beerpong game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "nodemon": "^3.0.2",
+    "websocket": "^1.0.34",
+    "uuid": "^9.0.1"
+  }
+}
