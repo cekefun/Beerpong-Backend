@@ -16,8 +16,6 @@ wsServer.on("request", request => {
     connection.on("close", () => console.log("closed!"))
     connection.on("message", message => {
         const result = JSON.parse(message.utf8Data)
-        console.log(result.userId)
-        console.log(clients)
         //I have received a message from the client
         //a user want to create a new game
         if (result.method === "create") {
@@ -89,16 +87,12 @@ wsServer.on("request", request => {
         "connection":  connection
     }
 
-    console.log(clients)
 
     const payLoad = {
         "method": "connect",
         "clientId": clientId
     }
 
-    console.log("Created new user: ")
-    console.log(clientId)
-    console.log(clients[clientId])
     //send back the client connect
     connection.send(JSON.stringify(payLoad))
 })
