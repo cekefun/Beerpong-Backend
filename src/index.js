@@ -89,6 +89,8 @@ wsServer.on("request", request => {
         "connection":  connection
     }
 
+    console.log(clients)
+
     const payLoad = {
         "method": "connect",
         "clientId": clientId
