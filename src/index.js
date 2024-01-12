@@ -17,7 +17,7 @@ wsServer.on("request", request => {
     connection.on("message", message => {
         const result = JSON.parse(message.utf8Data)
         console.log(result.userId)
-        console.log(clients.keys)
+        console.log(clients)
         //I have received a message from the client
         //a user want to create a new game
         if (result.method === "create") {
