@@ -6,25 +6,11 @@ httpServer.listen(9090, () => console.log("Listening.. on 9090"))
 //hashmap clients
 const clients = {};
 const games = {};
-const parseCookie = str =>
-  str
-    .split(';')
-    .map(v => v.split('='))
-    .reduce((acc, v) => {
-      acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
-      return acc;
-    }, {});
-
 const wsServer = new server({
     "httpServer": httpServer
 })
 wsServer.on("request", request => {
     //connect
-    console.log(request.httpRequest.headers.cookie);
-    console.log(request.httpRequest.headers);
-
-
-    const userId = request.httpRequest.headers.cookie ? parseCookie(request.httpRequest.headers.cookie).userId: undefined;
     const connection = request.accept(null, request.origin);
     connection.on("open", () => console.log("opened!"))
     connection.on("close", () => console.log("closed!"))
@@ -44,9 +30,9 @@ wsServer.on("request", request => {
                     name: "",
                     squares: Array(10).fill(false)
                 },
-                "host": userId,
+                "host": result.userId,
                 "clients": [{
-                    "clientId": userId,
+                    "clientId": result.userId,
                 }]
             }
 
@@ -55,7 +41,7 @@ wsServer.on("request", request => {
                 "game" : games[gameId]
             }
 
-            const con = clients[userId].connection;
+            const con = clients[result.userId].connection;
             con.send(JSON.stringify(payLoad));
             updateGameState();
         }
@@ -67,7 +53,7 @@ wsServer.on("request", request => {
             const game = games[gameId];
 
             game.clients.push({
-                "clientId": userId,
+                "clientId": result.userId,
             })
 
             const payLoad = {
@@ -75,7 +61,7 @@ wsServer.on("request", request => {
                 "game": game
             }
             //loop through all clients and tell them that people has joined
-            clients[userId].connection.send(JSON.stringify(payLoad))
+            clients[result.userId].connection.send(JSON.stringify(payLoad))
         }
         //a user plays
         if (result.method === "update") {
@@ -96,7 +82,7 @@ wsServer.on("request", request => {
     })
 
     //generate a new clientId
-    const clientId = !!userId? userId : guid();
+    const clientId = guid();
     clients[clientId] = {
         "connection":  connection
     }
