@@ -16,6 +16,7 @@ wsServer.on("request", request => {
     connection.on("close", () => console.log("closed!"))
     connection.on("message", message => {
         const result = JSON.parse(message.utf8Data)
+        console.log(result.userId)
         //I have received a message from the client
         //a user want to create a new game
         if (result.method === "create") {
