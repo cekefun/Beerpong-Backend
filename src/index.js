@@ -51,17 +51,26 @@ wsServer.on("request", request => {
 
             const gameId = result.gameId;
             const game = games[gameId];
-
-            game.clients.push({
-                "clientId": result.userId,
-            })
-
-            const payLoad = {
-                "method": "join",
-                "game": game
+            if(!!game){
+                game.clients.push({
+                    "clientId": result.userId,
+                })
+    
+                const payLoad = {
+                    "method": "join",
+                    "game": game
+                }
+                if(!!clients[result.userId]){
+                    clients[result.userId].connection.send(JSON.stringify(payLoad))
+                }else {
+                    console.log("tried to add a non-existing player")
+                }
+    
+            }
+            else {
+                console.log("Tried to join a non-existing game")
             }
             //loop through all clients and tell them that people has joined
-            clients[result.userId].connection.send(JSON.stringify(payLoad))
         }
         //a user plays
         if (result.method === "update") {
